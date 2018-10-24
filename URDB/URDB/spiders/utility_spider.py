@@ -1,5 +1,7 @@
 '''
 Class for creating a quote-scraping web crawler within a scrapy project
+
+Note that all filepaths are relative and assume that you are in the parent directory of the scrapy project when executing the crawl from the command line
 '''
 
 import scrapy
@@ -12,7 +14,7 @@ class QuotesSpider(scrapy.Spider):
 
     def start_requests(self):
         #Pull in external data for URLs
-        urls = list(pd.read_csv("../../Rate_URLs.csv")['Utility Domain URL'].unique())
+        urls = list(pd.read_csv("../Rate_URLs.csv")['Utility Domain URL'].unique())
 
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
@@ -29,7 +31,7 @@ class QuotesSpider(scrapy.Spider):
         #page is the text data scraped from the webpage being parsed
         #Pull the "www...." portion of the URL for value of page
         page = response.url.split("/")[-1]
-        filename = f'../../Pages/{self.name}-{page}.html'
+        filename = f'Pages/{self.name}-{page}.html'
         
         #Write the page contents text to file for later use
         with open(filename, 'wb') as f: 
