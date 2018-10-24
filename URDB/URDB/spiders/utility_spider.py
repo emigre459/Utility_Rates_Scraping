@@ -27,7 +27,8 @@ class QuotesSpider(scrapy.Spider):
         '''
 
         #page is the text data scraped from the webpage being parsed
-        page = response.url.split("/")[-2]
+        #Pull the "www...." portion of the URL for value of page
+        page = response.url.split("/")[-1]
         filename = f'../../Pages/{self.name}-{page}.html'
         
         #Write the page contents text to file for later use
