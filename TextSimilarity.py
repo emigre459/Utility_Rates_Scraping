@@ -13,7 +13,7 @@ import numpy as np
 
 def best_option(value, correct_values, 
     cluster = False, scorer = 'token_set_ratio',
-    score_threshold = 0.90):
+    score_threshold = 90):
     '''
     Takes a string value and returns the original string, the recommended gold standard string, and the score for that set.
 
@@ -51,7 +51,7 @@ def best_option(value, correct_values,
                     simplistic, only doing the tokenizing and sorting aspects.
                     Potentially a good compromise option.
 
-    score_threshold: float. Establishes the fuzzy match score that is the 
+    score_threshold: int. Establishes the fuzzy match score that is the 
                         lowest allowed value before just returning NaN. 
 
     Returns
@@ -107,6 +107,10 @@ def best_option(value, correct_values,
     elif scorer == 'token_sort_ratio':
         new_value, score = process.extractOne(value, list(correct_values),
             scorer = fuzz.token_sort_ratio)
+
+    elif scorer == 'partial_ratio':
+        new_value, score = process.extractOne(value, list(correct_values),
+            scorer = fuzz.partial_ratio)
 
     else:
         new_value, score = process.extractOne(value, list(correct_values))
