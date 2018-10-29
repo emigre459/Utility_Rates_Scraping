@@ -12,7 +12,8 @@ import pandas as pd
 import numpy as np
 
 def best_option(value, correct_values, 
-    cluster = False, scorer = 'token_set_ratio'):
+    cluster = False, scorer = 'token_set_ratio',
+    score_threshold = 0.90):
     '''
     Takes a string value and returns the original string, the recommended gold standard string, and the score for that set.
 
@@ -43,6 +44,9 @@ def best_option(value, correct_values,
                 'fuzz.token_sort_ratio': similar to token_set_ratio, but more 
                     simplistic, only doing the tokenizing and sorting aspects.
                     Potentially a good compromise option.
+
+    score_threshold: float. Establishes the fuzzy match score that is the 
+                        lowest allowed value before just returning NaN. 
 
     Returns
     --------
@@ -80,6 +84,15 @@ def best_option(value, correct_values,
     if not cluster and value in list(correct_values):  
         return value, value, 100
 
+
+    #Are we not using gold standard data but actually trying to find
+        #the closest match of a value within correct_values?
+        #If so, ignore the value itself (perfect match by default)
+    if cluster and value in list(correct_values):
+        correct_values = correct_values[correct_values != value]
+
+        #TODO: more efficient to use Series method for "is in" check?
+
     if scorer == 'token_set_ratio':
         new_value, score = process.extractOne(value, list(correct_values),
             scorer = fuzz.token_set_ratio)
@@ -93,7 +106,7 @@ def best_option(value, correct_values,
 
 
 
-    if score < 90:
+    if score < score_threshold:
         return value, np.nan, score
 
     else:
