@@ -33,7 +33,13 @@ def best_option(value, correct_values,
                 None: uses the simple fuzz.ratio() scorer. Not usually 
                     recommended.
 
-                'fuzz.token_set_ratio': the default. Tokenizes the string 
+                'partial_ratio': matches on substrings to give a higher match 
+                    score than would result from simple full string comparison.
+                    For example, simple fuzz.ratio() would return 60 for a 
+                    comparison of "Yankees" to "New York Yankees". But
+                    fuzz.partial_ratio() returns 100.
+
+                'token_set_ratio': the default. Tokenizes the string 
                     (separates words into substrings, makes everything lower 
                     case, removes punctuation), determines the most 
                     intersecting substrings, and weights the score based 
@@ -41,7 +47,7 @@ def best_option(value, correct_values,
                     duplicate tokens. Also alphabetizes tokens prior to 
                     sorting. Probably the most flexible option.
 
-                'fuzz.token_sort_ratio': similar to token_set_ratio, but more 
+                'token_sort_ratio': similar to token_set_ratio, but more 
                     simplistic, only doing the tokenizing and sorting aspects.
                     Potentially a good compromise option.
 
@@ -65,7 +71,8 @@ def best_option(value, correct_values,
     '''
 
     #Check that scorer has a meaningful value
-    if scorer not in [None, 'token_set_ratio', 'token_sort_ratio']:
+    if scorer not in [None, 'partial_ratio', 
+    'token_set_ratio', 'token_sort_ratio']:
         raise ValueError("scorer parameter not set to allowed value")
 
 
